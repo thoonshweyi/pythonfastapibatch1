@@ -1,0 +1,145 @@
+tool
+     postman
+     pychan
+     vscode 
+
+ai api
+     openai
+     Register (https://openai.com/)
+          login > api > signup
+
+------------------------------------------------------
+=>Check version before install
+     python3 --version (Python 3.12.6)
+     pip --version
+
+ 
+=> FastAPI (RESTful Api) 
+     https://fastapi.tiangolo.com/
+
+          1.install (pip is the python package manager)
+               pip install Jinja2
+
+               or 
+
+               python3 -m pip install Jinja2
+
+=>pip (pip is the python package manager)
+
+
+=> Check python version
+     python3 --version (Python 3.12.6)
+
+=>Check pip version
+     pip3 --version
+     python3 -m pip --version( pip 24.2 from C:\Users\user\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip (python 3.12) )
+     
+=>Upgrade pip3
+     pip3 install --upgrade pip
+
+     pip3 --version
+
+     pip3 list
+---------------------------------------------------
+     
+=>CRUD HTTP Reqest methods
+     Create -> POST
+     Read -> Get
+     Update -> Put
+     Delete -> DELETE
+
+
+---------------------------------------------------
+
+=> Install FastAPI 
+
+     pip3 list   or    pip list
+
+create folter fastapi 
+     mkdir fastapi 
+     cd fastapi
+
+     python3 -m venv fastapienv // you can change anyname of your want "fastapievn"
+     ls 
+     source fastapi/bin/activate // activated
+
+     pip3list or pip list
+
+     dectivate      // deactivated
+
+
+     pip install fastapi
+
+     pip3 list       or        pip list
+
+     pip install uvicorn
+     pip3 list       or        pip list
+
+     uvicorn filename:app --reload
+     https:://localhost:8000/docs (in browser)
+
+
+
+1. fastapienv (Virtual Environment)
+     What is a Virtual Environment?
+     A virtual environment is an isolated Python environment that allows you to install and manage project-specific dependencies without affecting the global Python installation.
+     It prevents conflicts between different projects by keeping dependencies separate.
+     Why Use a Virtual Environment?
+     Suppose you have two different projects requiring different versions of a package.
+     Example:
+     Project A needs FastAPI 0.70.0
+     Project B needs FastAPI 0.100.0
+     Without a virtual environment, upgrading FastAPI for one project may break the other.
+     A virtual environment solves this by creating isolated environments for each project.
+     How fastapienv Works?
+          When you run:
+          python3 -m venv fastapienv
+          It creates a folder named fastapienv, which contains:
+          A local copy of Python.
+          A separate package manager (pip) to install dependencies.
+          A Scripts (Windows) or bin (Linux/Mac) folder for executing commands inside the environment.
+
+     Activating the Virtual Environment
+     Before using fastapienv, you must activate it:
+     On Windows (CMD/PowerShell):
+          fastapienv\Scripts\activate
+     On macOS/Linux:
+          source fastapienv/bin/activate
+          After activation, your terminal prompt changes, indicating you are inside the virtual environment.
+     Deactivating the Virtual Environment
+          To exit the virtual environment, run:
+          deactivate
+
+2. FastAPI (pip install fastapi)
+     What is FastAPI?
+     FastAPI is a modern web framework for building APIs using Python.
+     It is designed to be fast, easy to use, and efficient.
+     It is built on Starlette (for web routing) and Pydantic (for data validation).
+     Key Features of FastAPI
+     ✅ Speed: Nearly as fast as Node.js and Go because it is built with async support.
+     ✅ Automatic Documentation: Generates API documentation (Swagger UI & ReDoc) automatically.
+     ✅ Data Validation: Uses Pydantic to validate incoming data automatically.
+     ✅ Asynchronous Support: Supports async/await for handling high-performance tasks.
+
+     Running FastAPI Application
+     Save the above file as main.py and run it with Uvicorn:
+
+          uvicorn main:app --reload
+     Open your browser and go to:
+     API Endpoint: http://127.0.0.1:8000
+     Swagger Documentation: http://127.0.0.1:8000/docs
+     ReDoc Documentation: http://127.0.0.1:8000/redoc
+
+3. Uvicorn (pip install uvicorn)
+     What is Uvicorn?
+     Uvicorn is a high-performance ASGI (Asynchronous Server Gateway Interface) web server.
+     It is used to run FastAPI applications efficiently.
+     Why Use Uvicorn?
+     ✅ Asynchronous: Handles multiple requests concurrently using async/await.
+     ✅ Lightweight & Fast: Minimal overhead, making it one of the fastest Python web servers.
+     ✅ Supports WebSockets & HTTP/2: Ideal for real-time applications.
+
+     How Uvicorn Works
+     A web framework like FastAPI defines API routes and handles requests/responses.
+     But it needs a server to listen for incoming requests and send responses.
+     Uvicorn acts as this server and communicates between clients and the FastAPI app.
