@@ -1,0 +1,58 @@
+=> Install OpenAi
+
+Login > API Platform 
+
+
+pip install openai
+
+
+=> Get Python Code 
+
+https://platform.openai.com/docs/overview?lang=python
+
+Docs > Overview > OpenAi developer platform
+
+from openai import OpenAI
+client = OpenAI()
+completion = client.chat.completions.create(
+model="gpt-4o",
+store=True,
+messages=[
+{"role": "user", "content": "write a haiku about ai"}
+]
+)
+
+=> Install Others 
+https://fastapi.tiangolo.com/
+https://www.uvicorn.org/
+pip install fastapi uvicorn
+
+htps://pypi.org/project/python-multipart/
+pip insatall python-multipart
+
+
+https://jinja.palletsprojects.co/en/stable
+https://pypi.org/project/aiofiles
+pip install jinja2
+pip install aiofiles
+
+pip install aiofiles jinja2
+
+pip3 list or pip list 
+
+
+mkdir part3chatbot
+cd part3chatbot/
+python3 -m venv fastapienv 
+ls 
+source fastapienv/bin/activate 
+pip3 list
+
+-------------------------------------------------------------------
+
+
+
+
+
+http://localhost:8000/docs
+uvicorn main:app --reload
