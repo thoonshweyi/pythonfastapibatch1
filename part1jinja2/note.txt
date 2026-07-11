@@ -1,0 +1,60 @@
+tool
+     postman
+     pychan
+     vscode 
+
+ai api
+     openai
+     Register (https://openai.com/)
+          login > api > signup
+
+------------------------------------------------------
+=>Check version before install
+     python3 --version (Python 3.12.6)
+     pip --version
+
+ 
+=> Jinja2 
+     https://jinja.palletsprojects.com/en/stable/
+
+     1.install
+     pip install Jinja2
+
+     or 
+
+     python3 -m pip install Jinja2
+
+
+     =>Upgrade Jinja2
+     python3 -m pip install --upgrade pip
+
+     =>Syntax
+     {{....}} = print variables or expressions
+     {%....%} = structures, loops, conditionals
+     {#....#}
+
+     ------------------------------------------------
+=>CRUD HTTP Reqest methods
+     Create -> POST
+     Read -> Get
+     Update -> Put
+     Delete -> DELETE
+
+
+---------------------------------------------------
+=>pip (pip is the python package manager)
+
+
+=> Check python version
+     python3 --version (Python 3.12.6)
+
+=>Check pip version
+     pip3 --version
+     python3 -m pip --version( pip 24.2 from C:\Users\user\AppData\Local\Programs\Python\Python312\Lib\site-packages\pip (python 3.12) )
+     
+=>Upgrade pip3
+     pip3 install --upgrade pip
+
+     pip3 --version
+
+     pip3 list

@@ -1,0 +1,119 @@
+=>ChatGPT
+ChatGPT is a webapplication, will generate a response
+     Article
+     Social Media
+     Code and more....
+2. ChatGPT is a product from OpenAi, OpenAI company that owns ChatGPT(launched in 2022)
+
+=> OpenAI API's (Applicaiton Programming Interface)
+     to be able to create our own Chatbots that are separated from ChatGPT
+
+=>OpenAI Modules
+GPT3.5, GPT-4, = text
+DALL.E         = image
+Whisper        = audio to text 
+
+=> Cost 
+     OpenAI API's cost is based on that module and tokens.
+
+=> Tokens 
+     1 token = 4 characters (3/4 a word)
+     100 token ~ (100 token x 4 chars = 400 chars) about 60words
+=>Tokenizer
+     https://platform.openai.com/tokenizer
+
+=> Install OpenAi
+
+Login > API Platform 
+
+
+pip install openai
+
+
+=> Get Python Code 
+
+https://platform.openai.com/docs/overview?lang=python
+
+Docs > Overview > OpenAi developer platform
+
+from openai import OpenAI
+client = OpenAI()
+completion = client.chat.completions.create(
+model="gpt-4o",
+store=True,
+messages=[
+{"role": "user", "content": "write a haiku about ai"}
+]
+)
+
+=> Install Others 
+https://fastapi.tiangolo.com/
+https://www.uvicorn.org/
+pip install fastapi uvicorn
+
+htps://pypi.org/project/python-multipart/
+pip install python-multipart
+
+
+https://jinja.palletsprojects.com/en/stable/
+https://pypi.org/project/aiofiles
+pip install jinja2
+pip install aiofiles
+
+pip install aiofiles jinja2
+
+pip3 list or pip list 
+
+
+mkdir part3chatbot
+cd part3chatbot/
+python3 -m venv fastapienv 
+ls 
+source fastapienv/bin/activate 
+pip3 list
+
+-------------------------------------------------------------------
+=> ENV 
+1. Create File 
+     .env 
+
+2. Install python-dotenv
+https://pypi.org/project/python-dotenv/
+pip install python-dotenv
+
+3.Import 
+
+import os
+from dotenv import dotenv_values
+
+
+----------------------------------
+=> Websocket (v)
+
+1. Install Websocket
+
+https://fastapi.tiangolo.com/advanced/websockets/#install-websockets
+pip install websockets
+
+from fastapi import FastAPI, WebSocket
+----------------------------------
+
+http://localhost:8000/docs
+http://localhost:8000/chats
+uvicorn main:app --reload
+
+18IN 
+----------------------------------
+=>Openai 
+
+https://openai.com
+click "Playground" menus > Prompts
+
+=> Roles 
+System = Context Setter 
+Assistant = Responder
+User = Questioner
+
+
+
+
