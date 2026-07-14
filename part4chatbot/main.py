@@ -13,8 +13,8 @@ load_dotenv()
 
 app = FastAPI()
 client = OpenAI(
-     api_key = os.getenv('OPEN_API_KEY'),
-     base_url="https://openrouter.ai/api/v1" # openrouter.ai changes
+     api_key = "ollama",
+     base_url="http://localhost:11434/v1"
 )
 
 templates = Jinja2Templates(directory="templates")
@@ -54,7 +54,7 @@ async def chat(request:Request,userinput:Annotated[str,Form()]):
      datas.append(userinput)
 
      completion = client.chat.completions.create(
-          model="openrouter/free", # openrouter.ai changes
+          model="gemma4:31b-cloud", # openrouter.ai changes
           store=False,
           messages=chatlogs,
           temperature= 0.6 # .5 (0 to 2)
