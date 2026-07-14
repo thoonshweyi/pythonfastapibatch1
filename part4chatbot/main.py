@@ -1,3 +1,4 @@
+print("Hello, FastAPI with OpenAI API! This is the main.py file for the chatbot application.")
 from openai import OpenAI
 from fastapi import FastAPI, Form, Request, WebSocket
 from typing import Annotated
@@ -12,7 +13,8 @@ load_dotenv()
 
 app = FastAPI()
 client = OpenAI(
-     api_key = os.getenv('OPEN_API_KEY')
+     api_key = os.getenv('OPEN_API_KEY'),
+     base_url="https://openrouter.ai/api/v1" # openrouter.ai changes
 )
 
 templates = Jinja2Templates(directory="templates")
@@ -52,7 +54,7 @@ async def chat(request:Request,userinput:Annotated[str,Form()]):
      datas.append(userinput)
 
      completion = client.chat.completions.create(
-          model="gpt-3.5-turbo",
+          model="openrouter/free", # openrouter.ai changes
           store=False,
           messages=chatlogs,
           temperature= 0.6 # .5 (0 to 2)
@@ -66,19 +68,22 @@ async def chat(request:Request,userinput:Annotated[str,Form()]):
      return templates.TemplateResponse(
           
           request= request,name = "layout.html",context={"datas":datas}
-
           # 'layout.html',{"request":request,"datas":datas}
 
      )
 
 
-@app.get('/image',response_class=HTMLResponse)
-async def image(request:Request):
+@app.get("/image", response_class=HTMLResponse)
+async def image(request: Request):
      return templates.TemplateResponse(
-          # request=request,name="image.html"
-          "image.html",{"request":request,"data":None,"error":None}
+        request=request,
+        name="image.html",
+        context={
+            "data": None,
+            "error": None,
+        },
      )
-
+     
 @app.post('/image',response_class=HTMLResponse)
 async def generateimage(request:Request,userinput:Annotated[str,Form()]):
      
