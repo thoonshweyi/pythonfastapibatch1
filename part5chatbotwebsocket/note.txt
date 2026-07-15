@@ -355,3 +355,56 @@ Python Code မှာ base_url="http://localhost:11434/v1" ကို သတ်�
 Internet မလိုဘဲ Local AI Chatbot အဖြစ် Run လို့ရပါပြီ။
 
 ဒါက OpenRouter API credits မလိုတော့ဘဲ Local မှာ AI ကို စမ်းသပ်ဖို့ အလွန်အသုံးဝင်တဲ့ နည်းလမ်းဖြစ်ပါတယ်။
+
+
+---------------------------------------------------------------------------------------------------------------------
+1. Why is the route /ws?
+/ws is just a standard web address (like /home or /login).
+
+Because FastAPI and your browser are using native, built-in WebSockets, they use normal web paths to find each other.
+
+Socket.io is a custom library that hides this path under the hood. FastAPI keeps it visible so you can name your paths whatever you want (like /chat or /live).
+
+2. Why the while True loop?
+Without the loop, the Python function runs once, finishes, and instantly closes the connection. You would only be able to send one message before getting disconnected.
+
+The while True loop holds the door open indefinitely.
+
+Because of await, it doesn't freeze your computer—it simply "sleeps" until a new message arrives, processes it, and goes back to waiting.
+
+
+1. It acts like a Namespace ****
+In Socket.io, you use namespaces to separate different communication channels (e.g., /chat vs /admin).
+
+In FastAPI, the route path is your namespace.
+
+If a client connects to ws://localhost:8000/chat, they hit your chat logic.
+
+If they connect to ws://localhost:8000/notifications, they hit your notifications logic.
+
+FastAPI routes the connection to different Python functions based on this path.
+
+How do you handle different types of messages?
+
+1. The Server sends JSON (from Python):
+Python
+# In FastAPI
+await websocket.send_json({
+    "type": "new_message", 
+    "text": "Hello World!"
+})
+2. The Browser reads the "type" (in JavaScript):
+JavaScript
+ws.onmessage = function(event) {
+    // 1. Parse the incoming string into a JavaScript object
+    var messageData = JSON.parse(event.data);
+    
+    // 2. Use an "if" or "switch" statement to act like your event router!
+    if (messageData.type === "new_message") {
+        // Handle a new message (add to list)
+        console.log("New message: " + messageData.text);
+    } else if (messageData.type === "user_typing") {
+        // Show typing indicator
+        console.log("Someone is typing...");
+    }
+};
