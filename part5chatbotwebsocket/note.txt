@@ -1,0 +1,357 @@
+=>ChatGPT
+ChatGPT is a webapplication, will generate a response
+     Article
+     Social Media
+     Code and more....
+2. ChatGPT is a product from OpenAi, OpenAI company that owns ChatGPT(launched in 2022)
+
+=> OpenAI API's (Applicaiton Programming Interface)
+     to be able to create our own Chatbots that are separated from ChatGPT
+
+=>OpenAI Modules
+GPT3.5, GPT-4, = text
+DALL.E         = image
+Whisper        = audio to text 
+
+=> Cost 
+     OpenAI API's cost is based on that module and tokens.
+
+=> Tokens 
+     1 token = 4 characters (3/4 a word)
+     100 token ~ (100 token x 4 chars = 400 chars) about 60words
+=>Tokenizer
+     https://platform.openai.com/tokenizer
+
+=> Install OpenAi
+
+Login > API Platform 
+
+
+pip install openai
+
+
+=> Get Python Code 
+
+https://platform.openai.com/docs/overview?lang=python
+
+Docs > Overview > OpenAi developer platform
+
+from openai import OpenAI
+client = OpenAI()
+completion = client.chat.completions.create(
+model="gpt-4o",
+store=True,
+messages=[
+{"role": "user", "content": "write a haiku about ai"}
+]
+)
+
+=> Install Others 
+https://fastapi.tiangolo.com/
+https://www.uvicorn.org/
+pip install fastapi uvicorn
+
+htps://pypi.org/project/python-multipart/
+pip install python-multipart
+
+
+https://jinja.palletsprojects.com/en/stable/
+https://pypi.org/project/aiofiles
+pip install jinja2
+pip install aiofiles
+
+pip install aiofiles jinja2
+
+pip3 list or pip list 
+
+
+mkdir part3chatbot
+cd part3chatbot/
+python3 -m venv fastapienv 
+ls 
+source fastapienv/bin/activate 
+pip3 list
+
+-------------------------------------------------------------------
+=> ENV 
+1. Create File 
+     .env 
+
+2. Install python-dotenv
+https://pypi.org/project/python-dotenv/
+pip install python-dotenv
+
+3.Import 
+
+import os
+from dotenv import dotenv_values
+
+
+----------------------------------
+=> Websocket (v)
+
+official doc
+https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API
+
+1. Install Websocket
+
+https://fastapi.tiangolo.com/advanced/websockets/#install-websockets
+pip install websockets
+
+from fastapi import FastAPI, WebSocket
+----------------------------------
+
+http://localhost:8000/docs
+http://localhost:8000/chats
+uvicorn main:app --reload
+
+18IN 
+----------------------------------
+=>Openai 
+
+https://openai.com
+click "Playground" menus > Prompts
+
+=> Roles 
+System = Context Setter 
+Assistant = Responder
+User = Questioner
+
+
+
+
+=>Open Router
+
+=>Ollama
+
+curl -fsSL https://ollama.com/install.sh | sh
+
+
+ollama pull gemma4:31b-cloud
+
+
+ollama run gemma4:31b-cloud
+
+
+sudo systemctl edit ollama
+
+
+[Service]
+Environment="OLLAMA_HOST=0.0.0.0:11434"
+
+
+sudo systemctl daemon-reload
+sudo systemctl restart ollama
+
+
+ollama list
+sudo ss -ltnp | grep 11434
+
+
+http://192.168.201.242:11434/api/chat
+
+
+{
+  "model": "gemma4:31b-cloud",
+  "messages": [
+    {
+      "role": "user",
+      "content": ""
+    }
+  ],
+  "stream": false
+}
+
+
+
+--------------------------------------------------------------------------------------------
+ollama ကဘာလဲ ဘာတွေလုပ်ပေးလဲ ဘယ်လိုသုံးရလဲ
+
+Ollama ဆိုတာ ကိုယ့်ကွန်ပျူတာပေါ်မှာ Large Language Models (LLMs) ကို Local အနေနဲ့ Run လို့ရအောင်လုပ်ပေးတဲ့ Tool တစ်ခုပါ။
+
+OpenAI API ကို အင်တာနက်ကနေ ခေါ်သုံးရတဲ့ပုံစံမဟုတ်ဘဲ Internet မလိုဘဲ (Model Download ပြီးရင်) ကိုယ့်စက်ပေါ်မှာ AI ကို Run နိုင်ပါတယ်။
+
+Ollama က ဘာတွေလုပ်ပေးလဲ?
+
+Ollama က AI Model တွေကို အလွယ်တကူ Install၊ Run၊ Manage လုပ်ပေးပါတယ်။
+
+ဥပမာ
+
+✅ Chatbot
+✅ Coding Assistant
+✅ Document Summary
+✅ Translation
+✅ Q&A
+✅ Content Writing
+✅ AI Agent
+✅ RAG (Retrieval Augmented Generation)
+✅ Image Understanding (Vision Models)
+ဘယ် Model တွေ Run လို့ရလဲ?
+
+ဥပမာ
+
+Llama 3
+Qwen
+Mistral
+Gemma
+DeepSeek
+Phi
+CodeLlama
+Qwen2.5-Coder
+
+စတဲ့ Open-source Models အများကြီးကို Run လို့ရပါတယ်။
+
+Ollama Architecture
+          Your Application
+      (Python / Node / React)
+
+               |
+               | HTTP API
+               |
+
+          localhost:11434
+          +------------+
+          |  Ollama    |
+          +------------+
+                 |
+         --------------------
+         |        |         |
+      Llama3   Qwen3    Gemma
+
+Application က localhost ကို Request ပို့တာပါ။
+
+Install
+
+Windows
+
+https://ollama.com/download
+
+Install ပြီးရင်
+
+ollama --version
+Model Download
+
+ဥပမာ
+
+ollama run llama3
+
+ပထမဆုံး run ရင်
+
+pulling manifest...
+
+ဆိုပြီး Model Download လုပ်ပါလိမ့်မယ်။
+
+Download ပြီးရင်
+
+>>> Hello
+
+လို Chat စလုပ်လို့ရပြီ။
+
+Example
+ollama run llama3
+>>> Who are you?
+
+I'm Llama 3...
+Model List ကြည့်
+ollama list
+
+ဥပမာ
+
+NAME
+llama3
+gemma3
+qwen3
+Model Remove
+ollama rm llama3
+Download Only
+ollama pull llama3
+Local API
+
+Ollama က REST API ပါပါတယ်။
+
+http://localhost:11434
+
+ဥပမာ
+
+POST /api/generate
+
+Body
+
+{
+  "model":"llama3",
+  "prompt":"Hello"
+}
+
+Response
+
+{
+  "response":"Hi! How can I help you?"
+}
+Python ကနေသုံး
+import requests
+
+url = "http://localhost:11434/api/generate"
+
+data = {
+    "model": "llama3",
+    "prompt": "Explain FastAPI"
+}
+
+response = requests.post(url, json=data)
+
+print(response.text)
+LangChain နဲ့
+from langchain_ollama import ChatOllama
+
+llm = ChatOllama(
+    model="llama3"
+)
+
+print(llm.invoke("Hello"))
+OpenAI SDK နဲ့လည်း သုံးလို့ရတယ်
+
+Ollama က OpenAI-compatible API ကို Support လုပ်ထားတဲ့အတွက်
+
+from openai import OpenAI
+
+client = OpenAI(
+    base_url="http://localhost:11434/v1",
+    api_key="ollama"
+)
+
+response = client.chat.completions.create(
+    model="llama3",
+    messages=[
+        {"role":"user","content":"Hello"}
+    ]
+)
+
+print(response.choices[0].message.content)
+
+သင်လက်ရှိသုံးနေတဲ့ OpenAI SDK ကို base_url ပြောင်းပေးရုံနဲ့ Ollama ကို အသုံးပြုနိုင်တာက အားသာချက်တစ်ခုပါ။
+
+Ollama ရဲ့ အားသာချက်များ
+✅ Free (Open-source Models)
+✅ API Cost မရှိ
+✅ Privacy ကောင်း (Data မထွက်)
+✅ Internet မလို (Model Download ပြီးရင်)
+✅ Fast (GPU ရှိရင် ပိုမြန်)
+✅ OpenAI-compatible API
+✅ Python / Node.js / Java / Go စတဲ့ Language အများစုနဲ့ သုံးလို့ရ
+အားနည်းချက်များ
+❌ Model Size ကြီးရင် RAM များများလိုတယ်
+❌ GPU မရှိရင် CPU ပေါ်မှာ အနည်းငယ်နှေးနိုင်တယ်
+❌ Cloud Models (ဥပမာ GPT-5.5) လောက် စွမ်းဆောင်ရည်မကောင်းနိုင်
+❌ Model Download Size ကြီးတတ်တယ် (2GB–40GB+)
+သင့်အတွက် (FastAPI Project)
+
+မကြာသေးခင်က သင်က FastAPI + OpenAI SDK + OpenRouter နဲ့ AI chatbot တည်ဆောက်နေတယ်လို့ ပြောခဲ့ပါတယ်။
+
+အဲဒီ Project ကို Ollama နဲ့ ပြောင်းသုံးချင်ရင်—
+
+Ollama ကို Install လုပ်ပါ။
+ollama pull llama3 (သို့) ollama pull qwen3 နဲ့ Model ကို Download လုပ်ပါ။
+Python Code မှာ base_url="http://localhost:11434/v1" ကို သတ်မှတ်ပြီး model="llama3" (သို့) Download လုပ်ထားတဲ့ Model အမည်ကို သုံးပါ။
+Internet မလိုဘဲ Local AI Chatbot အဖြစ် Run လို့ရပါပြီ။
+
+ဒါက OpenRouter API credits မလိုတော့ဘဲ Local မှာ AI ကို စမ်းသပ်ဖို့ အလွန်အသုံးဝင်တဲ့ နည်းလမ်းဖြစ်ပါတယ်။
