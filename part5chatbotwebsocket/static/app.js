@@ -24,6 +24,17 @@ ws.onerror = function(event) {
 }
 
 ws.onmessage = function(event){
+     // console.log(event);
+     // console.log(event.data);
+     let message = event.data;
+     if(message){
+          let messagediv = document.createElement('div');
+          messagediv.className = "p-3 ms-3 chat-message ai-response";
+          messagediv.textContent = message;
+          displaybox.appendChild(messagediv);
+
+          document.getElementById('loading-spinner').style.display = "none";
+     }
 
 }
 
@@ -34,7 +45,7 @@ sendbtn.addEventListener('click',function(e){
      let getinputval = userinput.value.trim();
 
      if(getinputval){
-          var userinputdiv = document.createElement("div");
+          let userinputdiv = document.createElement("div");
           userinputdiv.className = "p-3 ms-3 chat-message user-input";
           userinputdiv.textContent = getinputval;
           displaybox.appendChild(userinputdiv);
@@ -44,5 +55,6 @@ sendbtn.addEventListener('click',function(e){
           userinput.value = "";
           userinput.focus();
 
+          document.getElementById('loading-spinner').style.display = "block";
      }
 });

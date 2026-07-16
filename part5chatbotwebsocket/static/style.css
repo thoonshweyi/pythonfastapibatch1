@@ -6,16 +6,28 @@
      width: 100%;
      height: 100%;
 
-     background-image: url('https://cdn-icons-png.flaticon.com/512/4712/4712109.png ');
-     background-repeat: no-repeat;
-     background-position: center;
-     background-size: 30%;
-
      position: absolute;
      left: 0;
      top: -80px;
 
      animation: myani 5s 1 forwards;
+}
+.boticon::before{
+     content: "";
+     width: 100%;
+     height: 100%;
+     
+     /* background-image: url('images/boticon.png'); */
+     background-image: url('/static/images/boticon.png');
+
+     background-repeat: no-repeat;
+     background-position: center;
+     background-size: 30%;
+
+     position: absolute;
+     inset: 0;
+
+     opacity: 0.2;
 }
 
 @keyframes myani {

@@ -101,7 +101,7 @@ pip install websockets
 from fastapi import FastAPI, WebSocket
 ----------------------------------
 
-http://localhost:8000/docs
+http://localhost:8000/docs      // fastapi route testing tool
 http://localhost:8000/chats
 uvicorn main:app --reload
 

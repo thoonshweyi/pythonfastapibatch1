@@ -73,34 +73,42 @@ async def chatpage(request:Request):
 #      )
 
 # => Text Generate (After websocket)
-@app.post('/',response_class=HTMLResponse)
-async def chat(request:Request,userinput:Annotated[str,Form()]):
-     
-     chatlogs.append({"role": "user","content":userinput})
+# exe 1
+# @app.websocket("/ws")
+# async def chat(websocket: WebSocket):
+#      await websocket.accept()
+#      while True:
+#           userinput = await websocket.receive_text()
+#           await websocket.send_text(f"Message text was: {userinput}")
 
-     datas.append(userinput)
-
-     completion = client.chat.completions.create(
-          model="gemma4:31b-cloud", # openrouter.ai changes
-          store=False,
-          messages=chatlogs,
-          temperature= 0.6 # .5 (0 to 2)
-     )
-
-     botresponse = completion.choices[0].message.content
-     chatlogs.append({"role": "assistant","content":botresponse})
-    
-     datas.append(botresponse)
-     
-     return templates.TemplateResponse(
+# exe 2
+@app.websocket("/ws")
+async def chat(websocket: WebSocket):
+     await websocket.accept()
+     while True:
+          userinput = await websocket.receive_text()
           
-          request= request,name = "layout.html",context={"datas":datas}
-          # 'layout.html',{"request":request,"datas":datas}
+          chatlogs.append({"role": "user","content":userinput})          
+          datas.append(userinput)
+     
+          try: 
+               completion = client.chat.completions.create(
+                    model="gemma4:31b-cloud",
+                    store=False,
+                    messages=chatlogs,
+                    temperature= 0.6 # .5 (0 to 2)
+               )
 
-     )
-
-
-
+               botresponse = completion.choices[0].message.content
+               chatlogs.append({"role": "assistant","content":botresponse})          
+               datas.append(botresponse)
+               
+               await websocket.send_text(botresponse)
+                    
+          except Exception as err:
+               await websocket.send_text(f"Error Found: {str(err)}")
+               break;
+               
 
 # Image Generate
 @app.get("/image", response_class=HTMLResponse)
