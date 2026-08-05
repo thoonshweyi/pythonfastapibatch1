@@ -10,11 +10,16 @@ from fastapi.staticfiles import StaticFiles
 import os
 from dotenv import load_dotenv
 load_dotenv()
-
 app = FastAPI()
+
 client = OpenAI(
-     api_key = "ollama",
-     base_url="http://localhost:11434/v1"
+     api_key=os.getenv("GEMINI_API_KEY"),
+     base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+)
+
+imageClient = OpenAI(
+     api_key=os.getenv("HUGGING_FACE_API_KEY"),
+     base_url="https://router.huggingface.co/v1"
 )
 
 templates = Jinja2Templates(directory="templates")
@@ -54,8 +59,8 @@ async def chat(request:Request,userinput:Annotated[str,Form()]):
      datas.append(userinput)
 
      completion = client.chat.completions.create(
-          model="gemma4:31b-cloud", # openrouter.ai changes
-          store=False,
+          model="gemini-3.1-flash-lite",
+          # store=False,
           messages=chatlogs,
           temperature= 0.6 # .5 (0 to 2)
      )
@@ -69,7 +74,6 @@ async def chat(request:Request,userinput:Annotated[str,Form()]):
           
           request= request,name = "layout.html",context={"datas":datas}
           # 'layout.html',{"request":request,"datas":datas}
-
      )
 
 
@@ -90,32 +94,33 @@ async def generateimage(request:Request,userinput:Annotated[str,Form()]):
      error = None
      data = None
 
-     try:
-          completion = client.images.generate(
-               model="dall-e-2",
-               prompt= userinput,
-               size="256x256",
-               # quality="standard",
-               n=1,
-          )
+     # try:
+     completion = imageClient.images.generate(
+          model="stabilityai/stable-diffusion-xl-base-1.0",
+          prompt= userinput,
+          size="1024x1024",
+          # quality="standard",
+          n=1,
+     )
 
-          botresponse = completion.data[0].url
-    
-          if not completion.data or not botresponse:
-                raise ValueError("No image generated")
-     
-          # update data to the template
-          return templates.TemplateResponse(
-               # request= request,name = "image.html",context={"data":botresponse}
-               'image.html',{"request":request,"data":botresponse,"error":error}
-          )
-     except Exception as e:
-              return templates.TemplateResponse(
-                    'image.html',{"request":request,"data":data, "error": f"Error generating image: {str(e)}"}
-               )
-     
-    
+     botresponse = completion.data[0].url
 
+     if not completion.data or not botresponse:
+               raise ValueError("No image generated")
+
+     # update data to the template
+     return templates.TemplateResponse(
+          request=request,
+          name="image.html",
+          context={"data": botresponse, "error": error}
+     )
+     # except Exception as e:
+     #      return templates.TemplateResponse(
+     #           request=request,
+     #           name="image.html",
+     #           context={"data": data, "error": f"Error generating image: {str(e)}"}
+     #      )
+     
 
 # uvicorn main:app --reload
 

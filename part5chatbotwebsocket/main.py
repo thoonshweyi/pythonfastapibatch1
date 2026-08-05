@@ -72,7 +72,7 @@ async def chatpage(request:Request):
 
 #      )
 
-# => Text Generate (After websocket)
+# => Text Generate (After websocket, without streaming)
 # exe 1
 # @app.websocket("/ws")
 # async def chat(websocket: WebSocket):
@@ -82,6 +82,35 @@ async def chatpage(request:Request):
 #           await websocket.send_text(f"Message text was: {userinput}")
 
 # exe 2
+# @app.websocket("/ws")
+# async def chat(websocket: WebSocket):
+#      await websocket.accept()
+#      while True:
+#           userinput = await websocket.receive_text()
+          
+#           chatlogs.append({"role": "user","content":userinput})          
+     
+#           try: 
+#                completion = client.chat.completions.create(
+#                     model="gemma4:31b-cloud",
+#                     store=False,
+#                     messages=chatlogs,
+#                     temperature= 0.6 # .5 (0 to 2)
+#                )
+
+#                botresponse = completion.choices[0].message.content
+#                # await websocket.send_text(str(completion))
+#                await websocket.send_text(botresponse)
+               
+#                chatlogs.append({"role": "assistant","content":botresponse})          
+               
+                    
+#           except Exception as err:
+#                await websocket.send_text(f"Error Found: {str(err)}")
+#                break;
+
+
+# => Text Generate (After websocket, with streaming)
 @app.websocket("/ws")
 async def chat(websocket: WebSocket):
      await websocket.accept()
@@ -89,26 +118,34 @@ async def chat(websocket: WebSocket):
           userinput = await websocket.receive_text()
           
           chatlogs.append({"role": "user","content":userinput})          
-          datas.append(userinput)
      
           try: 
                completion = client.chat.completions.create(
                     model="gemma4:31b-cloud",
                     store=False,
                     messages=chatlogs,
-                    temperature= 0.6 # .5 (0 to 2)
+                    temperature= 0.6, # .5 (0 to 2)
+                    stream=True
                )
 
-               botresponse = completion.choices[0].message.content
-               chatlogs.append({"role": "assistant","content":botresponse})          
-               datas.append(botresponse)
-               
-               await websocket.send_text(botresponse)
+               for chunk in completion:
+                    botresponse = chunk.choices[0].delta.content
+                    # await websocket.send_text(str(chunk))
+                    
+                    if botresponse is not None:
+                         await websocket.send_text(str(botresponse))
+                         # chatlogs.append({"role": "assistant","content":botresponse})          
+                    
                     
           except Exception as err:
                await websocket.send_text(f"Error Found: {str(err)}")
                break;
                
+# result (without streaming)               
+# ChatCompletion(id='chatcmpl-358', choices=[Choice(finish_reason='stop', index=0, logprobs=None, message=ChatCompletionMessage(content='*Adjusts colorful collar and leans in with a mischievous grin*\n\n**"Haaa-haaa! You want a joke about web development? I’ve got a real *classic* for you!"**\n\n***\n\n**Why did the web developer walk out of the restaurant?**\n\n**Because the table layout was `float: left` and he couldn\'t find the `clear`!**\n\n***\n\n*Cackles loudly* \n\n**"Get it? Get it?! Now go back to your CSS and try to center a Div for three hours! HAHAHA!"**', refusal=None, role='assistant', annotations=None, audio=None, function_call=None, tool_calls=None))], created=1785515263, model='gemma4:31b', object='chat.completion', moderation=None, service_tier=None, system_fingerprint='fp_ollama', usage=CompletionUsage(completion_tokens=123, prompt_tokens=31, total_tokens=154, completion_tokens_details=None, prompt_tokens_details=None))
+         
+# result (streaming)
+# ChatCompletionChunk(id='chatcmpl-678', choices=[Choice(delta=ChoiceDelta(content='*! HAHAHA!"', function_call=None, refusal=None, role='assistant', tool_calls=None), finish_reason=None, index=0, logprobs=None)], created=1785514941, model='gemma4:31b', object='chat.completion.chunk', moderation=None, service_tier=None, system_fingerprint='fp_ollama', usage=None)
 
 # Image Generate
 @app.get("/image", response_class=HTMLResponse)

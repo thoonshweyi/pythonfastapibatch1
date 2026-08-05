@@ -352,3 +352,41 @@ Python Code မှာ base_url="http://localhost:11434/v1" ကို သတ်�
 Internet မလိုဘဲ Local AI Chatbot အဖြစ် Run လို့ရပါပြီ။
 
 ဒါက OpenRouter API credits မလိုတော့ဘဲ Local မှာ AI ကို စမ်းသပ်ဖို့ အလွန်အသုံးဝင်တဲ့ နည်းလမ်းဖြစ်ပါတယ်။
+
+
+
+
+
+
+
+
+---------------------------------------------------------------
+Text Generation with Open Router
+client = OpenAI(
+     api_key = os.getenv('OPEN_ROUTER_API_KEY'),
+     base_url="https://openrouter.ai/api/v1" # openrouter.ai changes
+)
+
+model="openrouter/free", # openrouter.ai changes
+
+Text Generation with Ollama
+     api_key = "ollama",
+     base_url="http://localhost:11434/v1"
+
+
+     model="gemma4:31b-cloud", 
+
+Text Generation with Google AI Studio
+     api_key = os.getenv('GEMINI_API_KEY'),
+     base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+
+
+     model="gemini-3.1-flash-lite",
+
+Text Generation with Slicon Flow
+     api_key=os.getenv("SILICONFLOW_API_KEY"),
+     base_url="https://api.siliconflow.com/v1",
+
+     model="black-forest-labs/FLUX.1-schnell",
+
+Test Generation with Hugging Face
