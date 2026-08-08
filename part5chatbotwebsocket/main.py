@@ -9,6 +9,11 @@ from fastapi.staticfiles import StaticFiles
 
 import os
 from dotenv import load_dotenv
+
+from huggingface_hub import InferenceClient
+import uuid
+from pathlib import Path
+
 load_dotenv()
 
 app = FastAPI()
@@ -16,6 +21,10 @@ client = OpenAI(
      api_key = "ollama",
      base_url="http://localhost:11434/v1"
 )
+imageClient = InferenceClient(
+    api_key="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"
+)
+
 
 templates = Jinja2Templates(directory="templates")
 
@@ -159,6 +168,39 @@ async def image(request: Request):
         },
      )
      
+# @app.post('/image',response_class=HTMLResponse)
+# async def generateimage(request:Request,userinput:Annotated[str,Form()]):
+     
+#      error = None
+#      data = None
+
+#      try:
+#           # completion = client.images.generate(
+#           #      model="dall-e-2",
+#           #      prompt= userinput,
+#           #      size="256x256",
+#           #      # quality="standard",
+#           #      n=1,
+#           # )
+
+#           # botresponse = completion.data[0].url
+    
+#           # if not completion.data or not botresponse:
+#           #       raise ValueError("No image generated")
+     
+#           # update data to the template
+#           botresponse = "image"
+#           return templates.TemplateResponse(
+#                # request= request,name = "image.html",context={"data":botresponse}
+#                'image.html',{"request":request,"data":botresponse,"error":error}
+#           )
+#      except Exception as e:
+#               return templates.TemplateResponse(
+#                     'image.html',{"request":request,"data":data, "error": f"Error generating image: {str(e)}"}
+#                )
+     
+    
+# =>by huggingface
 @app.post('/image',response_class=HTMLResponse)
 async def generateimage(request:Request,userinput:Annotated[str,Form()]):
      
@@ -166,124 +208,61 @@ async def generateimage(request:Request,userinput:Annotated[str,Form()]):
      data = None
 
      try:
-          completion = client.images.generate(
-               model="dall-e-2",
-               prompt= userinput,
-               size="256x256",
-               # quality="standard",
-               n=1,
+          botresponse = generate_image(
+               imageClient=imageClient,
+               prompt=userinput,
+               model="black-forest-labs/FLUX.1-schnell",  # သို့မဟုတ် "stabilityai/stable-diffusion-xl-base-1.0"
+               size="1024x1024",
+               n=1
           )
 
-          botresponse = completion.data[0].url
-    
-          if not completion.data or not botresponse:
-                raise ValueError("No image generated")
-     
-          # update data to the template
+          if not botresponse:
+               raise ValueError("No image generated")
+
           return templates.TemplateResponse(
-               # request= request,name = "image.html",context={"data":botresponse}
-               'image.html',{"request":request,"data":botresponse,"error":error}
+               request= request,name = "image.html",context={"data":botresponse}
           )
      except Exception as e:
-              return templates.TemplateResponse(
-                    'image.html',{"request":request,"data":data, "error": f"Error generating image: {str(e)}"}
-               )
+          return templates.TemplateResponse(
+               request=request,
+               name="image.html",
+               context={"data": data, "error": f"Error generating image: {str(e)}"}
+          )
      
-    
+              
+def generate_image(
+    imageClient: InferenceClient,
+    prompt: str,
+    model: str = "black-forest-labs/FLUX.1-schnell",
+    size: str = "1024x1024",
+    n: int = 1
+) -> Optional[str]:
+     try:
+          try:
+               width, height = map(int, size.split("x"))
+          except ValueError:
+               width, height = 1024, 1024
 
+          image = imageClient.text_to_image(
+               prompt=prompt,
+               model=model,
+               width=width,
+               height=height
+          )
+
+          # Unique file name ဖြင့် Save ခြင်း
+          OUTPUT_DIR = Path("static/generated_images")
+          OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+          
+          filename = f"{uuid.uuid4()}.png"
+          file_path = OUTPUT_DIR / filename
+          image.save(file_path)
+
+          return f"/static/generated_images/{filename}"
+
+     except Exception as e:
+          print("Error in generate_image:", e)
+          return None
 
 # uvicorn main:app --reload
 
-
-# https://fastapi.tiangolo.com/reference/templating/
-# https://fastapi.tiangolo.com/advanced/custom-response/#html-response
-
-# template example
-# https://fastapi.tiangolo.com/advanced/templates/#using-jinja2templates
-
-
-
-
-# Why use Annotated here?
-# Because you're using FastAPI!
-
-# FastAPI needs to know where to get userinput from (from the form body, not from query parameters or JSON body).
-
-# By using Form(), you tell FastAPI: “Hey, expect this userinput inside a form submission (application/x-www-form-urlencoded or multipart/form-data).”
-
-# Without Annotated and Form(), FastAPI would not know how to parse the incoming form field properly.
-
-# Annotated is a way to attach extra information (hints) to a normal Python type without changing how the type works.
-#  Annotated = real type + extra information for tools/frameworks
-
-
-# ① Browser sends request to FastAPI
-# User opens the page http://localhost:8000/
-
-# FastAPI receives the request.
-
-
-# ② FastAPI calls your function chatpage
-# FastAPI sees that / is handled by chatpage.
-
-# So FastAPI calls your chatpage() function.
-
-# ③ Inside chatpage(), you tell FastAPI:
-# Load the file templates/layout.html
-
-# Render it (fill in any data if needed)
-
-# Return the result as a TemplateResponse
-
-# ④ What happens inside TemplateResponse?
-# 🔵 FastAPI uses Jinja2, a template engine.
-
-# 🔵 Steps:
-
-# Find the file templates/layout.html
-
-# Read the file → (it’s just text with some Jinja tags like {{ }}, {% %}).
-
-# Render it → Jinja2 fills in any placeholders (like replacing {{ username }} with "John", etc).
-
-# Create a full HTML string.
-
-
-# ⑤ FastAPI wraps the HTML into HTMLResponse
-# The rendered HTML string is given to HTMLResponse.
-
-# HTMLResponse prepares a proper HTTP response:
-
-# Content-Type header = text/html
-
-# Status Code = 200 OK
-
-# Body = your full HTML page
-
-# ✅ Now it’s ready to send back to the browser.
-
-# ⑥ FastAPI sends the response to the browser
-# The browser receives the HTTP response.
-
-# The browser reads the HTML.
-
-# The browser displays the web page!
-
-
-
-# 🔵 Why Jinja2 Template needs request?
-# ✅ Because FastAPI's TemplateResponse depends on request for some features.
-
-# Even though pure Jinja2 (without FastAPI) doesn't need request,
-# FastAPI needs it for special things.
-
-# 🔥 Main Reasons:
-
-# Why	Explanation
-# 1. URL building	Inside template, you can use url_for() to build links dynamically. url_for() needs request.
-# 2. Security	Some authentication (user session, cookies) information is inside request.
-# 3. Internal FastAPI system	FastAPI's response generation uses request to build proper headers and background tasks if needed.
-
-
-
-# 5WS

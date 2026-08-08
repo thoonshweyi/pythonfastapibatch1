@@ -408,3 +408,8 @@ ws.onmessage = function(event) {
         console.log("Someone is typing...");
     }
 };
+
+=========================================================
+=> Hugging Face Inference
+
+# pip install huggingface_hub pillow
