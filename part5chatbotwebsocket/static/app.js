@@ -8,7 +8,18 @@ const userinput = document.getElementById('userinput');
 const displaybox = document.getElementById('displaybox');
 const clearhistory = document.getElementById('clear-history');
 
-var ws = new WebSocket("ws://localhost:8000/ws");
+// for localhost
+// var ws = new WebSocket("ws://localhost:8000/ws");
+
+// for server deployment
+let websocketstring = '';
+if(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"){
+     websocketstring = `ws://localhost:8000/ws`; //local
+}else{
+     websocketstring = `wss://${window.location.hostname}/ws`; // https deployment
+}
+var ws = new WebSocket(websocketstring);
+
 
 let lastmessagediv = null;
 let isnewinput = true;
@@ -33,6 +44,8 @@ ws.onmessage = function(event){
      let message = event.data;
      if(lastmessagediv && !isnewinput){
         lastmessagediv.textContent += message;
+
+        savetolocal('ai-response',message)
      }else{
           let messagediv = document.createElement('div');
           messagediv.className = "p-3 ms-3 chat-message ai-response";
@@ -60,6 +73,7 @@ sendbtn.addEventListener('click',function(e){
           displaybox.appendChild(userinputdiv);
 
           ws.send(getinputval); // to websocket
+          savetolocal("user-input",getinputval) // to localstorage
 
           userinput.value = "";
           userinput.focus();
@@ -73,10 +87,53 @@ sendbtn.addEventListener('click',function(e){
 
 // [{role:user-input,content:"hello how are you?"},{role:bot-resp,content:"blah blah...."}]
 
+window.onload = function(){
+     let storagedatas = JSON.parse(localStorage.getItem("chathistory") || "[]");
+
+ 
+     if(storagedatas.length > 0){
+          let currole = null;
+          let curcontent= "";
+
+          // console.log(storagedatas);
+          storagedatas.forEach((storagedata,idx) => {
+               // console.log(storagedata);
+               // console.log(idx);
+
+               if(storagedata.role == currole){
+                    curcontent += storagedata.content;
+               }else{
+                    // console.log(currole); // undefined
+                    if(currole){
+                         let messagediv = document.createElement('div');
+                         messagediv.className = "p-3 ms-3 chat-message "+currole;
+                         messagediv.textContent = curcontent;
+                         displaybox.appendChild(messagediv);
+                    }
+                    // start new message
+                    currole = storagedata.role;
+                    curcontent = storagedata.content;
+
+                    // console.log(currole); // user-input, ai-response
+               }
+               // console.log(curcontent);
+
+               if(idx === storagedatas.length - 1){
+                    let messagediv = document.createElement('div');
+                    messagediv.className = "p-3 ms-3 chat-message "+currole;
+                    messagediv.textContent = curcontent;
+                    displaybox.appendChild(messagediv);
+               }
+          });
+     }else{
+          displaybox.innerHTML = `<small class="text-muted">How can I help you?</small>`;
+     }
+}
+
 function savetolocal(role,content){
      let getdatas = JSON.parse(localStorage.getItem("chathistory") || "[]");
      getdatas.push({"role":role,"content":content});
-     localStorage.setItem("chathistory",JSON.stringify());
+     localStorage.setItem("chathistory",JSON.stringify(getdatas));
 }
 
 clearhistory.addEventListener('click',function(){
