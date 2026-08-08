@@ -22,7 +22,7 @@ client = OpenAI(
      base_url="http://localhost:11434/v1"
 )
 imageClient = InferenceClient(
-    api_key="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"
+    api_key=os.getenv("HUGGING_FACE_API_KEY"),
 )
 
 
