@@ -18,11 +18,11 @@ load_dotenv()
 
 app = FastAPI()
 client = OpenAI(
-     api_key = "ollama",
-     base_url="http://localhost:11434/v1"
+     api_key=os.getenv("HUGGING_FACE_API_KEY"),
+     base_url="https://router.huggingface.co/v1"   
 )
 imageClient = InferenceClient(
-    api_key=os.getenv("HUGGING_FACE_API_KEY"),
+     api_key=os.getenv("HUGGING_FACE_API_KEY"),
 )
 
 
@@ -130,7 +130,7 @@ async def chat(websocket: WebSocket):
      
           try: 
                completion = client.chat.completions.create(
-                    model="gemma4:31b-cloud",
+                    model="deepseek-ai/DeepSeek-V4-Flash-0731:novita",
                     store=False,
                     messages=chatlogs,
                     temperature= 0.6, # .5 (0 to 2)
@@ -167,7 +167,8 @@ async def image(request: Request):
             "error": None,
         },
      )
-     
+
+# => Image Generate (Before websocket)
 # @app.post('/image',response_class=HTMLResponse)
 # async def generateimage(request:Request,userinput:Annotated[str,Form()]):
      
@@ -199,35 +200,59 @@ async def image(request: Request):
 #                     'image.html',{"request":request,"data":data, "error": f"Error generating image: {str(e)}"}
 #                )
      
+# => Image Generate (After websocket)
+# @app.websocket("/image")
+# async def generateimage(websocket: WebSocket):
+#      await websocket.accept()
+#      while True:
+#           userinput = await websocket.receive_text()
+     
+#           try: 
+#                completion = client.images.generate(
+#                     model="dall-e-2",
+#                     prompt= userinput,
+#                     size="256x256",
+#                     n=1,
+#                )
+
+#                botresponse = completion.data[0].url
+        
+#                if not completion.data or not botresponse:
+#                     raise ValueError("No image generated")
+               
+#                await websocket.send_text(str(botresponse))
+               
+#           except Exception as err:
+#                await websocket.send_text(f"Error Found: {str(err)}")
+#                break;
+               
     
 # =>by huggingface
-@app.post('/image',response_class=HTMLResponse)
-async def generateimage(request:Request,userinput:Annotated[str,Form()]):
+@app.websocket("/image")
+async def generateimage(websocket: WebSocket):
      
-     error = None
-     data = None
+     await websocket.accept()
+     while True:
+          userinput = await websocket.receive_text()
+     
+          try: 
+               botresponse = generate_image(
+                    imageClient=imageClient,
+                    prompt=userinput,
+                    model="black-forest-labs/FLUX.1-schnell",  # သို့မဟုတ် "stabilityai/stable-diffusion-xl-base-1.0"
+                    size="1024x1024",
+                    n=1
+               )
 
-     try:
-          botresponse = generate_image(
-               imageClient=imageClient,
-               prompt=userinput,
-               model="black-forest-labs/FLUX.1-schnell",  # သို့မဟုတ် "stabilityai/stable-diffusion-xl-base-1.0"
-               size="1024x1024",
-               n=1
-          )
+               if not botresponse:
+                    raise ValueError("No image generated")
 
-          if not botresponse:
-               raise ValueError("No image generated")
-
-          return templates.TemplateResponse(
-               request= request,name = "image.html",context={"data":botresponse}
-          )
-     except Exception as e:
-          return templates.TemplateResponse(
-               request=request,
-               name="image.html",
-               context={"data": data, "error": f"Error generating image: {str(e)}"}
-          )
+               await websocket.send_text(str(botresponse))
+               
+          except Exception as err:
+               await websocket.send_text(f"Error Found: {str(err)}")
+               break;
+ 
      
               
 def generate_image(

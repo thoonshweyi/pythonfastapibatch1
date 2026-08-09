@@ -1,9 +1,9 @@
 {% include "index.html" %}
 <div class="container mt-1">
      <!-- Error Message -->
-     {% if error %}
+     <!-- {% if error %}
           <div class="alert alert-danger">{{ error }}</div>
-     {% endif %}
+     {% endif %} -->
      <div class="col-sm-6 col-md-4 mx-auto">
           <div class="card border-0 text-center mb-3">
                <div class="container py-3">
@@ -16,13 +16,17 @@
                          <div class="card-body">
                               <div class="boticon"></div>
                               <div id="displaybox" class="border-0 displaybox">
-                                   {% if data %}
+                                   <!-- {% if data %}
                                         <img src="{{ data }}" class="responseimg" alt="Generated Image" onload="hideloading()" onerror="handleimageerror()">
                                         <span id="image-error" class="text-danger" style="display: none;">Failed to load image</span>
                                         
                                    {% else %}    
                                         <small class="text-muted">No image available.</small>
-                                   {% endif %}
+                                   {% endif %} -->
+
+                                   
+                                   <!-- After websocket -->
+                                   <!-- new img will come from js -->
                               </div>
 
                               <div class="">
@@ -49,8 +53,8 @@
      <!-- end loading -->
 </div>
 
-// show hide loading
-<script>
+<!-- // show hide loading -->
+<!-- <script>
 
      // show loading whe form is submitted
      document.getElementById('form').addEventListener("submit",function(){
@@ -67,4 +71,5 @@
           document.getElementById('loading-spinner').style.display = "none";
           document.getElementById("image-error").style.display =  "block";
      }
-</script>
+</script> -->
+<script src="{{ url_for('static',path='appimg.js') }}" type="text/javascript"></script> 
