@@ -105,7 +105,20 @@ http://localhost:8000/docs      // fastapi route testing tool
 http://localhost:8000/chats
 uvicorn main:app --reload
 
-18IN 
+-------------------------------
+=>Deploy on Render.com
+
+Click "New Menu" > Web Service 
+
+Name = 'pythonchatbot'
+Project = No project
+Language = Python3
+Branch = main
+Region = Singapore (Southeast Asia)
+Bulld Command = pip install -r modules.txt
+Start Command =  uvicorn main:app --host 0.0.0.0 --port 3000
+
+
 ----------------------------------
 =>Openai 
 
@@ -116,6 +129,22 @@ click "Playground" menus > Prompts
 System = Context Setter 
 Assistant = Responder
 User = Questioner
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
