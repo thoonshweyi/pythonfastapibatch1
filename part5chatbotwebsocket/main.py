@@ -36,8 +36,8 @@ app.mount('/static',StaticFiles(directory='static'),name="static")
 # chatlogs = []
 chatlogs = [{
      "role": "system",
-     "content": "You are a joker.\
-          Tell the joke for web development" #mean next new line
+     "content": "You are a friend of Data Land Technology DLT.\
+          Also, you know everything about general knowledge. Especially about web development." #mean next new line
 }]
 datas = []
 
@@ -120,14 +120,15 @@ async def chatpage(request:Request):
 
 
 # => Text Generate (After websocket, with streaming)
-@app.websocket("/ws")
+@app.websocket("/chat")
 async def chat(websocket: WebSocket):
      await websocket.accept()
      while True:
           userinput = await websocket.receive_text()
           
           chatlogs.append({"role": "user","content":userinput})          
-     
+
+          fullresponse = ""
           try: 
                completion = client.chat.completions.create(
                     model="deepseek-ai/DeepSeek-V4-Flash-0731:novita",
@@ -139,11 +140,11 @@ async def chat(websocket: WebSocket):
 
                for chunk in completion:
                     botresponse = chunk.choices[0].delta.content
-                    # await websocket.send_text(str(chunk))
-                    
                     if botresponse is not None:
+                         fullresponse += botresponse
                          await websocket.send_text(str(botresponse))
-                         # chatlogs.append({"role": "assistant","content":botresponse})          
+               
+               chatlogs.append({"role": "assistant","content":fullresponse})          
                     
                     
           except Exception as err:

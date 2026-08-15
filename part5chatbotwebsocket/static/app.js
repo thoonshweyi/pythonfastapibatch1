@@ -9,14 +9,14 @@ const displaybox = document.getElementById('displaybox');
 const clearhistory = document.getElementById('clear-history');
 
 // for localhost
-// var ws = new WebSocket("ws://localhost:8000/ws");
+// var ws = new WebSocket("ws://localhost:8000/chat");
 
 // for server deployment
 let websocketstring = '';
 if(window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"){
-     websocketstring = `ws://localhost:8000/ws`; //local
+     websocketstring = `ws://localhost:8000/chat`; //local
 }else{
-     websocketstring = `wss://${window.location.hostname}/ws`; // https deployment
+     websocketstring = `wss://${window.location.hostname}/chat`; // https deployment
 }
 var ws = new WebSocket(websocketstring);
 
